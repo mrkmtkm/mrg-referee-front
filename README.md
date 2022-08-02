@@ -1,14 +1,20 @@
 
-## Usage
+## 新体操採点システム(フロントエンド)
 
+### 使用技術
+・Next.js + Typescript + Socket.io
+
+### 使い方
 ```bash
 $ npm install -g yarn
 $ yarn install
 $ yarn dev
 ```
-front
+フロントエンドURI
+
 http://localhost:8080
 
-backend-api(other)
-http://localhost:80
+バックエンドURI(別リポジトリ)
+
+http://localhost:4000
 
