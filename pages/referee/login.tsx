@@ -10,26 +10,30 @@ import {
   Button,
   Alert,
 } from 'react-bootstrap';
-import { SignupService } from '@/services';
-
+import { AdminAuthService, UserAuthService } from '@/services';
 import { useRouter } from 'next/router';
 import { Link } from '@/components/atoms';
+import { TournamentRepository } from '@/repositories/tournament';
 
-const AdminSignup = () => {
+const RefereeLogin = () => {
   const router = useRouter();
   const [name, setName] = useState('');
-  const [password, setPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
+  const [tournamentId, setTournamentId] = useState('');
+
   const [showAlert, setShowAlert] = useState<boolean>(false);
 
   const onSubmit: React.FormEventHandler = async (e) => {
     e.preventDefault();
     try {
-      await SignupService.adminSignup(name, password);
-      alert('登録に成功しました');
-      router.push('/admin/login');
-    } catch (e) {
-      console.log(e);
+      const tournament = await TournamentRepository.findByTournamentId(
+        tournamentId
+      );
+      localStorage.setItem('name', name);
+      localStorage.setItem('tournamentName', tournament.name);
+      localStorage.setItem('tournamentId', tournamentId);
+
+      router.push('/referee');
+    } catch {
       setShowAlert(true);
     }
   };
@@ -40,11 +44,11 @@ const AdminSignup = () => {
           <Card className='border-0'>
             <Card.Body>
               <h1 className='h4 text-center font-weight-bold mb-4'>
-                管理者登録
+                審判ログイン
               </h1>
               {showAlert && (
                 <Alert variant='danger' className='text-center'>
-                  登録に失敗しました
+                  大会IDが間違っています。もう一度入力してください。
                 </Alert>
               )}
               <Form onSubmit={onSubmit}>
@@ -60,39 +64,24 @@ const AdminSignup = () => {
                   />
                 </FormGroup>
                 <FormGroup className='mb-4'>
-                  <FormLabel>パスワード</FormLabel>
+                  <FormLabel>大会ID</FormLabel>
                   <input
                     className='form-control mb-3'
-                    type={showPassword ? 'text' : 'password'}
+                    type={'text'}
                     required
-                    value={password}
-                    placeholder='パスワードを入力してください'
-                    onChange={(e) => setPassword(e.target.value)}
+                    value={tournamentId}
+                    placeholder='大会IDを入力してください'
+                    onChange={(e) => setTournamentId(e.target.value)}
                   />
                 </FormGroup>
-                <FormGroup controlId='visible-password' className='mb-4'>
-                  <Form.Check
-                    label='パスワードを表示する'
-                    type='checkbox'
-                    checked={showPassword}
-                    onChange={() => setShowPassword(!showPassword)}
-                    className='d-flex align-items-center'
-                  />
-                </FormGroup>
+
                 <Button
                   type='submit'
                   variant='primary'
                   className='d-block w-100 font-weight-bold'
                 >
-                  管理者登録
+                  ログイン
                 </Button>
-                <div className='border-top pt-5 mt-5 text-center'>
-                  <p>
-                    <Link href='/admin/login' as='/admin/login'>
-                      ログイン
-                    </Link>
-                  </p>
-                </div>
               </Form>
             </Card.Body>
           </Card>
@@ -102,4 +91,4 @@ const AdminSignup = () => {
   );
 };
 
-export default AdminSignup;
+export default RefereeLogin;

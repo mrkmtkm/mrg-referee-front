@@ -4,26 +4,26 @@ import { useRouter } from 'next/router';
 import { Admin } from '@/entities';
 import { AdminContext } from '@/contexts';
 interface Props {
-    children: ReactNode;
+  children: ReactNode;
 }
 export const AdminAuth = ({ children }: Props) => {
-    const router = useRouter();
-    const [currentAdmin, setCurrentAdmin] = useState<Admin | null>(null);
+  const router = useRouter();
+  const [currentAdmin, setCurrentAdmin] = useState<Admin | null>(null);
 
-    async function fetchData() {
-        try {
-            setCurrentAdmin(await AdminService.me());
-        } catch (e) {
-            router.push('/login');
-        }
+  async function fetchData() {
+    try {
+      setCurrentAdmin(await AdminService.me());
+    } catch (e) {
+      router.push('/admin/login');
     }
-    useEffect(() => {
-        fetchData();
-    }, []);
+  }
+  useEffect(() => {
+    fetchData();
+  }, []);
 
-    return currentAdmin ? (
-        <AdminContext.Provider value={currentAdmin}>
-            {children}
-        </AdminContext.Provider>
-    ) : null;
+  return currentAdmin ? (
+    <AdminContext.Provider value={currentAdmin}>
+      {children}
+    </AdminContext.Provider>
+  ) : null;
 };
